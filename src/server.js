@@ -17,7 +17,7 @@ export const setupServer = () => {
   app.use(logger);
 
   app.get('/contacts', async (req, res) => {
-    const data = await contactServices.getMovies();
+    const data = await contactServices.getContacts();
 
     res.json({
       status: 200,
@@ -28,7 +28,7 @@ export const setupServer = () => {
 
   app.get('/contacts/:id', async (req, res) => {
     const { id } = req.params;
-    const data = await contactServices.getMovieById(id);
+    const data = await contactServices.getContactById(id);
 
     if (!data) {
       return res.status(404).json({
