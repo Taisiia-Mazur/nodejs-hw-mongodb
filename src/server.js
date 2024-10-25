@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import express from "express";
 import cors from "cors";
 import pino from 'pino-http';
@@ -50,6 +49,7 @@ export const setupServer = () => {
     });
   });
 
+  // eslint-disable-next-line no-unused-vars
   app.use((error, req, res, next) => {
     res.status(500).json({
       message: error.message,
