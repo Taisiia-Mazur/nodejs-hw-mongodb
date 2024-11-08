@@ -30,6 +30,14 @@ contactShema.pre('findOneAndUpdate', updateHooks);
 
 contactShema.post('findOneAndUpdate', handleSaveError);
 
+export const sortByList = [
+  'name',
+  'phoneNumber',
+  'email',
+  'isFavourite',
+  'contactType',
+];
+
 const contactCollection = model('contacts', contactShema);
 
 export default contactCollection;
