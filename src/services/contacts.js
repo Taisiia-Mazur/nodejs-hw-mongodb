@@ -7,10 +7,11 @@ export const getContacts = async ({
   sortBy = '_id',
   sortOrder = 'asc',
   filter = {},
-  userId,
 }) => {
   const skip = (page - 1) * perPage;
-  const contactsQuery = contactCollection.find({userId});
+  const contactsQuery = contactCollection.find({
+    userId: filter.userId || undefined,
+  });
 
   if (filter.isFavourite) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
@@ -37,8 +38,8 @@ export const getContacts = async ({
   };
 };
 
-export const getContactById = async ({id, userId}) => {
-  const contact = await contactCollection.findOne({ userId, _id: id });
+export const getContactById = async (id, userId) => {
+  const contact = await contactCollection.findOne({ _id: id, userId });
 
   return contact;
 };
@@ -50,7 +51,7 @@ export const addContact = async (payload) => {
 };
 
 
-export const updateContact = async (id, payload, options = {}, userId) => {
+export const updateContact = async (id, payload, userId, options = {}) => {
   const rawResult = await contactCollection.findOneAndUpdate(
     { _id: id, userId},
     payload,
@@ -68,7 +69,7 @@ export const updateContact = async (id, payload, options = {}, userId) => {
   };
 };
 
-export const deleteContact = async ({id, userId}) => {
+export const deleteContact = async (id, userId) => {
   const contact = await contactCollection.findOneAndDelete({_id: id, userId});
 
   return contact;
