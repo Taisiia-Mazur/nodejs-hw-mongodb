@@ -8,6 +8,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import contactsRouter from './routers/contacts.js';
 import authRouter from './routers/auth.js';
+import { UPLOAD_DIR } from './constants/users.js';
 
 const port = Number(env('PORT', 3000));
 
@@ -29,6 +30,8 @@ export const setupServer = () => {
   app.use('/auth', authRouter);
 
   app.use('/contacts', contactsRouter);
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(notFoundHandler);
 

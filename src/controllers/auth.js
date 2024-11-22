@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import * as authServices from '../services/auth.js';
 
 const setupSession = (res, session) => {
@@ -66,10 +67,25 @@ export const logoutController = async (req, res) => {
 
 
 export const requestResetEmailController = async (req, res) => {
-  await authServices.requestResetToken(req.body.email);
+  const result = await authServices.requestResetToken(req.body.email);
+
+    if (result.rejected.length > 0) {
+      throw createHttpError(500, 'Failed to send the email, please try again later.');
+    }
+
   res.json({
     message: 'Reset password email was successfully sent!',
     status: 200,
     data: {},
   });
 };
+
+
+export const resetPasswordController = async (req, res) => {
+  await authServices.resetPassword(req.body);
+  res.json({
+    message: 'Password was successfully reset!',
+    status: 200,
+    data: {},
+  });
+}

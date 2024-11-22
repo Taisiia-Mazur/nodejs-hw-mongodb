@@ -4,6 +4,9 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { sortByList } from '../db/models/Contact.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import {env} from "../utils/env.js"
 
 export const getContactsController = async (req, res) => {
   const { _id: userId } = req.user;
@@ -55,8 +58,20 @@ export const addContactController = async (req, res) => {
 export const updateContactController = async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
-    const { _id: userId } = req.user;
-  const result = await contactServices.updateContact(id, payload, userId);
+  const { _id: userId } = req.user;
+  const photo = req.file;
+
+   let photoUrl;
+
+   if (photo) {
+     if (env('ENABLE_CLOUDINARY') === 'true') {
+       photoUrl = await saveFileToCloudinary(photo);
+     } else {
+       photoUrl = await saveFileToUploadDir(photo);
+     }
+   }
+
+  const result = await contactServices.updateContact(id, payload, userId, {photo: photoUrl});
 
   if (!result) {
     throw createHttpError(404, 'Contact not found');
