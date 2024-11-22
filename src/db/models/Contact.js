@@ -31,9 +31,10 @@ const contactShema = new Schema(
     photo: {
       type: String,
     },
-  },
+    },
   { versionKey: false, timestamps: true },
 );
+
 
 contactShema.post('save', handleSaveError);
 

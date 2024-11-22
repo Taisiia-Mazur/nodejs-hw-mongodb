@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import * as path from 'node:path';
 import * as contactServices from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -59,19 +60,17 @@ export const updateContactController = async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
   const { _id: userId } = req.user;
-  const photo = req.file;
-
-   let photoUrl;
-
-   if (photo) {
+   let photo = null;
+   if (req.file) {
      if (env('ENABLE_CLOUDINARY') === 'true') {
-       photoUrl = await saveFileToCloudinary(photo);
+       photo = await saveFileToCloudinary(req.file, 'photo');
      } else {
-       photoUrl = await saveFileToUploadDir(photo);
+       await saveFileToUploadDir(req.file);
+       photo = path.join(req.file.filename);
      }
    }
 
-  const result = await contactServices.updateContact(id, payload, userId, {photo: photoUrl});
+  const result = await contactServices.updateContact(id, payload, userId, photo);
 
   if (!result) {
     throw createHttpError(404, 'Contact not found');
@@ -82,6 +81,7 @@ export const updateContactController = async (req, res) => {
     message: `Successfully patched a contact!`,
     data: result.contact,
   });
+
 };
 
 export const deleteContactController = async (req, res) => {
