@@ -1,0 +1,50 @@
+tags:
+  - Auth
+summary: Confirm oauth code
+operationId: ConfirmOauthCode
+description: 'Confirm oauth code'
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          code:
+            description: "User's code it's all between code= and & in url, and %2F should be replaced by / (slesh)"
+            type: string
+            example: '4%20AeanS0Zu2rj1ZUYqwmwFv2roeVdnXzlw2XWVwXpd529qIS_EbFV_mvrMGOLskItQY589QA'
+responses:
+  '200':
+    description: 'Successfully logged in via Google OAuth!'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully logged in via Google OAuth!
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'zTI9FhYNNLjx8r7jUQjlmI431YO9iL9iU9rGUMpt'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'
